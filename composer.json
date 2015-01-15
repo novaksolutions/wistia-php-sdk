@@ -1,0 +1,24 @@
+{
+  "name": "ipalaus/wistia-php-sdk",
+  "description": "Unofficial Wistia SDK for PHP.",
+  "keywords": ["wistia", "sdk", "api"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Isern Palaus",
+      "email": "ipalaus@ipalaus.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "guzzlehttp/guzzle": "5.1.x"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ipalaus\\Wistia\\": "src/"
+    }
+  }
+}

@@ -43,6 +43,142 @@ class Client
     }
 
     /**
+     * The stats API allows you to retrieve some account-wide information. Don't buy a nice car to overcompensate;
+     * instead, show off how many hours of your video have been played! Or, celebrate when you reach a certain landmark.
+     *
+     * @return mixed
+     */
+    public function getStatsAccount()
+    {
+        return $this->get('stats/account.json');
+    }
+
+    /**
+     * The stats API allows you to retrieve information about all of the videos in a particular project. We know you
+     * like it when we let you get specific.
+     *
+     * @param int $projectId
+     *
+     * @return mixed
+     */
+    public function getStatsProjects($projectId)
+    {
+        return $this->get("stats/projects/{$projectId}.json");
+    }
+
+    /**
+     * The Wistia stats API can be used to retrieve stats for any given video. Ever wanted to entice that special
+     * someone (or those hundreds of special someones viewing your page) to watch your video? Win their heart by
+     * displaying impressive data like your engagement rate. Or, give away a puppy to the thousandth viewer of your
+     * video. We heard you can 3D print those now.
+     *
+     * @param int $mediaId
+     *
+     * @return mixed
+     */
+    public function getStatsMedias($mediaId)
+    {
+        return $this->get("stats/medias/{$mediaId}.json");
+    }
+
+    /**
+     * Using the stats API, you can retrieve the data used to construct the engagement graphs at the top of the stats
+     * page for any video in Wistia.
+     *
+     * @param int $mediaId
+     *
+     * @return mixed
+     */
+    public function getStatsMediasEngagement($mediaId)
+    {
+        return $this->get("stats/medias/{$mediaId}/engagement.json");
+    }
+
+    /**
+     * This method allows you to retrieve a list of visitors that have watched videos in your account.
+     *
+     * @param int $page
+     * @param int $perPage
+     * @param string $filter
+     * @param string $search
+     *
+     * @return mixed
+     */
+    public function getStatsVisitors($page = 1, $perPage = 100, $filter = null, $search = null)
+    {
+        $query = ['page' => $page, 'per_page' => $perPage];
+
+        if (!empty($filter)) {
+            $query['filter'] = $filter;
+        }
+
+        if (!empty($search)) {
+            $query['search'] = $search;
+        }
+
+        return $this->get('stats/visitors.json', ['query' => $query]);
+    }
+
+    /**
+     * This method allows you to retrieve the information for a single visitor.
+     *
+     * @param string $visitorKey
+     *
+     * @return mixed
+     */
+    public function getStatsVisitor($visitorKey)
+    {
+        return $this->get("stats/visitors/{$visitorKey}.json");
+    }
+
+    /**
+     * This method allows you to retrieve a list of events (viewing sessions) from your account.
+     *
+     * @param int $page
+     * @param int $perPage
+     * @param string $mediaId
+     * @param string $visitorKey
+     * @param string $startDate
+     * @param string $endDate
+     *
+     * @return mixed
+     */
+    public function getStatsEvents($page = 1, $perPage = 100, $mediaId = null, $visitorKey = null, $startDate = null, $endDate = null)
+    {
+        $query = ['page' => $page, 'per_page' => $perPage];
+
+        if (!empty($mediaId)) {
+            $query['media_id'] = $mediaId;
+        }
+
+        if (!empty($visitorKey)) {
+            $query['visitor_key'] = $visitorKey;
+        }
+
+        if (!empty($startDate)) {
+            $query['start_date'] = date('Y-m-d', strtotime($startDate));
+        }
+
+        if (!empty($endDate)) {
+            $query['end_date'] = date('Y-m-d', strtotime($endDate));
+        }
+
+        return $this->get('stats/events.json', ['query' => $query]);
+    }
+
+    /**
+     * This method gives you the information about a single event from your account.
+     *
+     * @param string $eventKey
+     *
+     * @return mixed
+     */
+    public function getStatsEvent($eventKey)
+    {
+        return $this->get("stats/events/{$eventKey}.json");
+    }
+
+    /**
      * Obtain a list of all the media in your account. You can
      * page the returned list.
      *
@@ -81,9 +217,7 @@ class Client
     {
         $response = $this->getHttpClient()->get($uri, $options);
 
-        if ($response->getStatusCode() === 200) {
-            return $response->json();
-        }
+        return ($response->getStatusCode() === 200) ? $response->json() : false;
     }
 
     /**
